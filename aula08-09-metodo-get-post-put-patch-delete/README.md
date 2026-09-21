@@ -136,3 +136,15 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+
+ # 🧪 Testes no Insomnia - Aula 08 e 09
+Os testes das aulas foram organizados no Insomnia da seguinte forma:
+
+Teste PATCH e DELETE (localhost:3000/convidados)
+- Método PATCH
+- Método DELETE
+
+Teste GET e POST (localhost:3000/status ou convidados)
+- Método GET
+- Método POST
