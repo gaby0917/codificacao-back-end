@@ -116,3 +116,40 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+
+# Teste aula 16
+👥 Validação de Colaboradores
+A aplicação utiliza NestJS + Zod para validar os dados recebidos no cadastro de colaboradores.
+Regras
+nome: mínimo de 3 caracteres.
+email: deve ser válido.
+idade: entre 18 e 65 anos.
+departamento: somente TI, RH ou Financeiro.
+Funcionamento
+
+O ZodValidationPipe recebe o schema do Zod e valida o body da requisição antes de chegar ao controller.
+Requisição
+    ↓
+ZodValidationPipe
+    ↓
+Schema Zod
+    ↓
+┌───────────────┐
+│ Válido?       │
+├───────┬───────┤
+│ Sim   │ Não   │
+↓       ↓
+Controller  HTTP 400
+
+
+Em caso de erro, a API retorna 400 Bad Request com o campo e a mensagem do erro.
+Exemplo:
+{
+  "nome": "Gabrielly Amaral",
+  "email": "gabrielly.p.amaral@aluno.senai.br",
+  "idade": 20,
+  "departamento": "TI"
+}
+
+O tipo Colaborador é gerado automaticamente pelo Zod usando z.infer, evitando duplicação entre validação e TypeScript.
