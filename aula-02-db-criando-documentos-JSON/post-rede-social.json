@@ -1,0 +1,17 @@
+{
+    "texto":"Pela décima quinta vez, Vini Jr e Virginia se separam",
+    "autor":"choquei",
+    "data":"2026-10-21",
+    "curtidas":[
+        "milly01",
+        "drih029",
+        "amandita02",
+        "alicita"
+    ],
+    "comentarios":[
+        {"autor":"milly01", "texto":"Já era de se esperar"},
+        {"autor":"amandita02", "texto":"Deve ter tido pouca galha"},
+        {"autor":"drih029", "texto":"Daqui a pouco aparecem juntos de novo"},
+        {"autor":"alicita", "texto":"Que babado, meo!"}
+    ]
+}

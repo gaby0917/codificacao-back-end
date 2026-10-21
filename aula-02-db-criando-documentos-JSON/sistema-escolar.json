@@ -1,0 +1,60 @@
+{
+   "sistema":"Sistema Escolar",
+   "descriçaõ": "Um Sistema Escola conta com armazenamento de informações gerais de toda escola.",
+   "EntidadesChaves":[
+    "Alunos",
+    "Professores",
+    "Disciplinas",
+    "Turma"
+   ],
+   "mapeamentoEscolar":{
+    "alunos":{
+        "matricula":[
+            "nome",
+            "dataNascimento",
+            "nomePais",
+            "historicoEscolar",
+            "endereco",
+            "contato",
+            "email",
+            "CPF"
+        ]
+    }
+},
+  "professores":{
+            "cadastro":[
+                "nome",
+                "dataNascimento",
+                "contato",
+                "formacao",
+                "turmas"
+            ]
+        },
+
+        
+   "disciplinas":[
+    "Matemática",
+    "Português",
+    "História",
+    "Geografia",
+    "Química",
+    "Inglês",
+    "Física",
+    "Francês",
+    "Educação física"
+   ],
+   
+   "turma":[
+    "serie",
+    "turno",
+    "sala"
+   ],
+ 
+      
+   "justicativa:":[
+    {
+        "texto": "Facilita a organização da escola, tornando mais simples e eficiente o controle de alunos, professores, disciplinas e turmas."
+    }
+   ]
+}    
+  
