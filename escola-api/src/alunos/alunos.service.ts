@@ -1,6 +1,11 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Injectable,
+     NotFoundException, 
+     ConflictException,
+     InternalServerErrorException,
+     BadRequestException} from "@nestjs/common";
+import { InjectModel} from "@nestjs/mongoose";
+import { Model, QueryFilter } from "mongoose";
+import{MongoServerError} from 'mongodb';
 import { CreateAlunoDto } from "./dto/create-aluno.dto.js";
 import { UpdateAlunoDto } from "./dto/update-aluno.dto.js";
 import { Aluno, AlunoDocument } from "./schemas/alunos.schema.js";
@@ -12,12 +17,30 @@ export class AlunoService{
     constructor(@InjectModel(Aluno.name) private alunoModel: Model<AlunoDocument>){}
 
     async create(createAlunoDto : CreateAlunoDto):Promise<Aluno>{
-        const createdAluno = new this.alunoModel(createAlunoDto);
-        return createdAluno.save(); //!POST
+
+        try{
+         const createdAluno = new this.alunoModel(createAlunoDto);
+          return await createdAluno.save(); //!POST
+        }catch(error: unknown){
+              if( 
+                error instanceof MongoServerError
+                &&
+                error.code === 11000
+              ){
+                throw new ConflictException('Matrícula duplicada. A matrícula deve ser única.');
+            }
+            throw new InternalServerErrorException('Erro ao Processar o cadastro do aluno. Por favor,tente novamente mais tarde.');
+        }
+        
     }
 
-
-    async findAllPageFilter(page: number, limit: number, nome?: string, curso?: string, orderBy?: string, orderDirection?: 'asc' | 'desc',){
+    async findAllPageFilter(
+        page: number,
+         limit: number,
+          nome?: string,
+           curso?: string, 
+            orderBy?: string,
+             orderDirection?: 'asc' | 'desc',){
         
         const skip = (page - 1) * limit;
         const filtro: any = {};
