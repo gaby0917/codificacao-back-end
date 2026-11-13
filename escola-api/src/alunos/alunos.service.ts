@@ -9,6 +9,7 @@ import{MongoServerError} from 'mongodb';
 import { CreateAlunoDto } from "./dto/create-aluno.dto.js";
 import { UpdateAlunoDto } from "./dto/update-aluno.dto.js";
 import { Aluno, AlunoDocument } from "./schemas/alunos.schema.js";
+import { tr } from "zod/locales";
 
 
 
@@ -36,14 +37,15 @@ export class AlunoService{
 
     async findAllPageFilter(
         page: number,
-         limit: number,
-          nome?: string,
-           curso?: string, 
-            orderBy?: string,
-             orderDirection?: 'asc' | 'desc',){
+        limit: number,
+        nome?: string,
+        curso?: string, 
+        orderBy?: string,
+        orderDirection?: 'asc' | 'desc',
+    ){
         
         const skip = (page - 1) * limit;
-        const filtro: any = {};
+        const filtro: any = {ativo: true};
 
         if(nome){
             filtro.nome = {
@@ -80,7 +82,9 @@ export class AlunoService{
      }//!GET
 
     async findOne(id:string):Promise<Aluno>{
-        const aluno=await this.alunoModel.findById(id).exec();
+        const aluno=await this.alunoModel.findOne({
+            _id: id, ativo: true
+        })
 
         if(!aluno){
             throw new NotFoundException(`Aluno com id ${id} não encontrado.`);
@@ -98,7 +102,8 @@ export class AlunoService{
         return alunoAtualizado;
     } //!PATCH
     async remove(id: string): Promise<Aluno>{
-        const removeAluno=await this.alunoModel.findByIdAndDelete(id).exec();
+        const removeAluno=await this.alunoModel.findByIdAndUpdate
+        (id, {ativo: false}, {new: true}).exec();
 
         if(!removeAluno){
             throw new NotFoundException(`Aluno com id ${id} removido.`);
@@ -107,4 +112,17 @@ export class AlunoService{
 
     } //!DELETE
     //!CURD
+
+    async restore(id: string): Promise<Aluno>{
+        const alunoRestaurado = await this.alunoModel.findByIdAndUpdate(
+            id, {ativo: true}, {new: true}
+        ).exec();
+
+        if(!alunoRestaurado){
+            throw new NotFoundException(`Aluno com ID ${id} não encontrado`)
+        }
+
+        return alunoRestaurado;
+    }
+
 }

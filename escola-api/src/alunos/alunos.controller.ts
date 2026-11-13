@@ -180,4 +180,24 @@ export class AlunoController {
     remove(@Param('id') id: string){
         return this.alunoService.remove(id);
     }
+
+    @Patch(':id/restaurar')
+    @ApiOperation({
+        summary: 'Restaura um aluno que foi removido por (Soft Delete)',
+    })
+    @ApiResponse({
+        status: 200,
+        description: 'Aluno reativado com sucesso',
+    })
+    @ApiResponse({
+        status: 404,
+        description: 'Aluno não encontrado',
+    })
+    @ApiResponse({
+        status: 500,
+        description: 'Erro interno no servidor'
+    })
+    restore(@Param('id') id: string){
+        return this.alunoService.restore(id);
+    }
 }
