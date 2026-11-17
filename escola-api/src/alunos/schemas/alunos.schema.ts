@@ -6,27 +6,32 @@ export type AlunoDocument = HydratedDocument<Aluno>;
 @Schema()
 export class Aluno{
     @Prop({
+        type: String,
         required:true
     })
-    nome:string;
+    nome!:string;
     @Prop({
+        type: Number,
         required:true
     })
-    idade:number;
+    idade!:number;
     @Prop({
+        type: String,
         required:true,
         unique: true
     })
-    matricula:string;
-    @Prop([
-        String
-    ])
-    cursos:string[];
+    matricula!:string;
+    @Prop({
+        type: [String],
+        required: true,
+    })
+    cursos!:string[];
 
     @Prop({
+        type: Boolean,
         default: true,
     })
-    ativo: boolean;
+    ativo!: boolean;
 }
 
 export const AlunoSchema = SchemaFactory.createForClass(Aluno);
