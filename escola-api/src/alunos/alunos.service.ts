@@ -1,4 +1,5 @@
 import { Injectable,
+     Inject,
      NotFoundException, 
      ConflictException,
      InternalServerErrorException,
@@ -9,13 +10,23 @@ import{MongoServerError} from 'mongodb';
 import { CreateAlunoDto } from "./dto/create-aluno.dto.js";
 import { UpdateAlunoDto } from "./dto/update-aluno.dto.js";
 import { Aluno, AlunoDocument } from "./schemas/alunos.schema.js";
-import { tr } from "zod/locales";
-
-
+import { ConfigService } from "@nestjs/config";
+import { variaveisAmbiente } from "../config/env.config.js";
+import type { ConfigType } from "@nestjs/config";
+import databaseConfig from "../config/database.config.js";
 
 @Injectable()
 export class AlunoService{
-    constructor(@InjectModel(Aluno.name) private alunoModel: Model<AlunoDocument>){}
+    constructor(@InjectModel(Aluno.name) private alunoModel: Model<AlunoDocument>,
+    private readonly configService: ConfigService<variaveisAmbiente, true>,
+    @Inject(databaseConfig.KEY) private dbconfig: ConfigType<typeof databaseConfig>){}
+
+    configVariaveis(){
+        const nodeEnv= this.configService.get('NODE_ENV',{ infer:true});
+        const port = this.configService.get('PORT', {infer:true});
+        const mongoUri = this.configService.get('MONGO_URI', {infer:true});
+        const jwtSecret = this.configService.get('JWT_SECRET', {infer:true});
+    }
 
     async create(createAlunoDto : CreateAlunoDto):Promise<Aluno>{
 
@@ -37,15 +48,15 @@ export class AlunoService{
 
     async findAllPageFilter(
         page: number,
-        limit: number,
-        nome?: string,
-        curso?: string, 
-        orderBy?: string,
-        orderDirection?: 'asc' | 'desc',
+         limit: number,
+          nome?: string,
+           curso?: string, 
+            orderBy?: string,
+             orderDirection?: 'asc' | 'desc',
     ){
         
         const skip = (page - 1) * limit;
-        const filtro: any = {ativo: true};
+        const filtro: any = {ativo:true};
 
         if(nome){
             filtro.nome = {
@@ -82,9 +93,8 @@ export class AlunoService{
      }//!GET
 
     async findOne(id:string):Promise<Aluno>{
-        const aluno=await this.alunoModel.findOne({
-            _id: id, ativo: true
-        })
+       // const aluno=await this.alunoModel.findById(id).exec();
+         const aluno = await this.alunoModel.findOne({ _id: id, ativo: true })
 
         if(!aluno){
             throw new NotFoundException(`Aluno com id ${id} não encontrado.`);
@@ -102,8 +112,8 @@ export class AlunoService{
         return alunoAtualizado;
     } //!PATCH
     async remove(id: string): Promise<Aluno>{
-        const removeAluno=await this.alunoModel.findByIdAndUpdate
-        (id, {ativo: false}, {new: true}).exec();
+        const removeAluno=await this.alunoModel.findByIdAndUpdate(
+            id, { ativo:false }, { new:true }).exec();
 
         if(!removeAluno){
             throw new NotFoundException(`Aluno com id ${id} removido.`);
@@ -111,18 +121,16 @@ export class AlunoService{
         return removeAluno;
 
     } //!DELETE
-    //!CURD
 
-    async restore(id: string): Promise<Aluno>{
+    async restore(id:string): Promise <Aluno>{
         const alunoRestaurado = await this.alunoModel.findByIdAndUpdate(
-            id, {ativo: true}, {new: true}
+        id, {ativo: true}, {new: true}
         ).exec();
 
         if(!alunoRestaurado){
-            throw new NotFoundException(`Aluno com ID ${id} não encontrado`)
+            throw new NotFoundException(`aluno com ID ${id} não encontrado`)
         }
-
         return alunoRestaurado;
     }
-
+    //!CURD
 }
